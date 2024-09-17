@@ -1,0 +1,117 @@
+import math
+from itertools import combinations
+
+class Vector:
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    @classmethod
+    def from_string(cls, vector_string):
+        x, y, z = map(float, vector_string.split(','))
+        return cls(x, y, z)
+
+    def __str__(self):
+        return f"({self.x}, {self.y}, {self.z})"
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __sub__(self, other):
+        return Vector(self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def magnitude(self):
+        return math.sqrt(self.x**2 + self.y**2 + self.z**2)
+
+    def cross(self, other):
+        return Vector(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x
+        )
+    
+    def dot(self, other):  # Метод для скалярного произведения
+        return self.x * other.x + self.y * other.y + self.z * other.z
+
+# Функция для поиска точки, наиболее удаленной от начала координат
+def farthest_point(vectors):
+    return max(vectors, key=lambda v: v.magnitude())
+
+# Функция для вычисления центра масс
+def center_of_mass(vectors):
+    n = len(vectors)
+    if n == 0:
+        return Vector()
+    x_center = sum(v.x for v in vectors) / n
+    y_center = sum(v.y for v in vectors) / n
+    z_center = sum(v.z for v in vectors) / n
+    return Vector(x_center, y_center, z_center)
+
+# Функция для вычисления площади параллелограмма
+def parallelogram_area(v1, v2):
+    return v1.cross(v2).magnitude()
+
+# Функция для вычисления объема параллелепипеда
+def parallelepiped_volume(v1, v2, v3):
+    return abs(v1.dot(v2.cross(v3)))
+
+# Функция для нахождения периметра у треугольника
+def triangle_perimeter(a, b, c):
+    return (a - b).magnitude() + (b - c).magnitude() + (c - a).magnitude()
+
+# Функция для нахождения площади треугольника
+def triangle_area(a, b, c):
+    ab = b - a
+    ac = c - a
+    return 0.5 * ab.cross(ac).magnitude()
+
+# Основной код программы
+N = int(input("Введите количество точек N: "))
+vectors = []
+for i in range(N):
+    coords = input(f"Введите координаты точки {i + 1} в формате x,y,z: ")
+    vectors.append(Vector.from_string(coords))
+
+# Задача 1: Найти точку, наиболее удаленную от начала координат
+farthest = farthest_point(vectors)
+print("Точка, наиболее удаленная от начала координат:", farthest)
+
+# Задача 2: Найти координаты центра масс
+center = center_of_mass(vectors)
+print("Координаты центра масс:", center)
+
+# Задача 3: Площадь параллелограмма, заданного двумя векторами
+if N >= 2:
+    v1, v2 = vectors[0], vectors[1]
+    area = parallelogram_area(v1, v2)
+    print("Площадь параллелограмма, построенного на двух заданных векторах:", area)
+
+# Задача 4: Объем параллелепипеда, заданного тремя векторами
+if N >= 3:
+    v1, v2, v3 = vectors[0], vectors[1], vectors[2]
+    volume = parallelepiped_volume(v1, v2, v3)
+    print("Объем параллелепипеда, построенного на трех заданных векторах:", volume)
+
+# Задача 5: Нахождение треугольника с наибольшей площадью
+max_area = 0
+max_area_triangle = None
+triangles = []
+
+for a, b, c in combinations(vectors, 3):
+    area = triangle_area(a, b, c)
+    triangles.append((a, b, c, area))
+    if area > max_area:
+        max_area = area
+        max_area_triangle = (a, b, c)
+
+if max_area_triangle:
+    print("Максимальная площадь треугольника:", max_area)
+    print("Точки треугольника с максимальной площадью:", max_area_triangle[0], max_area_triangle[1], max_area_triangle[2])
+else:
+    print("Нет достаточно точек для определения треугольника.")
+
+# Вывод всех треугольников и их площадей
+print("\nПлощади всех треугольников:")
+for a, b, c, area in triangles:
+    print(f"Треугольник с точками {a}, {b}, {c} имеет площадь {area}.")
