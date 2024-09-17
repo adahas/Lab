@@ -1,0 +1,29 @@
+class Animal:
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+
+    def get_description(self):
+        return f"Имя: {self.__name}, Возраст: {self.__age}"
+
+class Zebra(Animal):
+    def __init__(self, name, age, stripes):
+        super().__init__(name, age)
+        self.__stripes = stripes
+
+    def get_description(self):
+        return f"{super().get_description()}, Вид: Зебра, Количество полос: {self.__stripes}"
+
+class Dolphin(Animal):
+    def __init__(self, name, age, size):
+        super().__init__(name, age)
+        self.__size = size
+
+    def get_description(self):
+        return f"{super().get_description()}, Вид: Дельфин, Размер: {self.__size}"
+
+zebra = Zebra("Зорро", 5, 10)
+dolphin = Dolphin("Флиппер", 8, "Средний")
+
+print(zebra.get_description())
+print(dolphin.get_description())
