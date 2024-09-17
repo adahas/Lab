@@ -1,0 +1,32 @@
+class Mother:
+    def __init__(self, name, age):
+        self.__name = name  
+        self.__age = age    
+
+    def get_name(self):
+        return self.__name
+
+    def get_age(self):
+        return self.__age
+    
+    def __str__(self):
+        return f"Mother: {self.__name}, Age: {self.__age}"
+
+
+class Daughter(Mother):
+    def __init__(self, name, age, favorite_toy):
+        super().__init__(name, age)
+        self.__favorite_toy = favorite_toy  
+
+    def get_favorite_toy(self):
+        return self.__favorite_toy
+
+    def __str__(self):
+        return f"Daughter: {self.get_name()}, Age: {self.get_age()}, Favorite Toy: {self.__favorite_toy}"
+
+
+mother = Mother("Анна", 40)
+daughter = Daughter("Мария", 10, "Кукла")
+
+print(mother)   
+print(daughter) 
