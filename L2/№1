@@ -1,0 +1,79 @@
+class Complex:
+    def __init__(self, real=0, imag=0):
+        self.__real = real  
+        self.__imag = imag  
+
+    @classmethod
+    def from_string(cls, complex_string):
+        complex_string = complex_string.replace(' ', '')  
+        if 'i' not in complex_string:
+            raise ValueError("Необходимо указать мнимую часть (i).")
+
+        
+        complex_string = complex_string[:-1]
+
+        if '+' in complex_string:
+            real, imag = complex_string.split('+')
+        elif '-' in complex_string[1:]:  
+            real, imag = complex_string.rsplit('-', 1)
+            imag = '-' + imag  
+        else:
+            raise ValueError("Неправильный формат числа.")
+
+        return cls(float(real), float(imag))
+
+    def __add__(self, other):
+        if isinstance(other, Complex):
+            return Complex(self.__real + other.__real, self.__imag + other.__imag)
+        return NotImplemented
+
+    def __sub__(self, other):
+        if isinstance(other, Complex):
+            return Complex(self.__real - other.__real, self.__imag - other.__imag)
+        return NotImplemented
+
+    def __mul__(self, other):
+        if isinstance(other, Complex):
+            real_part = self.__real * other.__real - self.__imag * other.__imag
+            imag_part = self.__real * other.__imag + self.__imag * other.__real
+            return Complex(real_part, imag_part)
+        return NotImplemented
+
+    def __truediv__(self, other):
+        if isinstance(other, Complex):
+            denominator = other.__real**2 + other.__imag**2
+            real_part = (self.__real * other.__real + self.__imag * other.__imag) / denominator
+            imag_part = (self.__imag * other.__real - self.__real * other.__imag) / denominator
+            return Complex(real_part, imag_part)
+        return NotImplemented
+
+    def __abs__(self):
+        return (self.__real**2 + self.__imag**2) ** 0.5  
+
+    def __str__(self):
+        if self.__imag >= 0:
+            return f"{self.__real} + {self.__imag}i"
+        else:
+            return f"{self.__real} - {-self.__imag}i"
+
+    def __repr__(self):
+        return f"Complex({self.__real}, {self.__imag})"
+
+
+
+complex_input = input("Введите комплексное число в формате 'a + bi' или 'a - bi': ")
+c1 = Complex.from_string(complex_input)
+
+
+print("Комплексное число:", c1)
+print("Модуль числа:", abs(c1))
+
+
+complex_input2 = input("Введите второе комплексное число в формате 'a + bi' или 'a - bi': ")
+c2 = Complex.from_string(complex_input2)
+
+
+print("Сложение:", c1 + c2)
+print("Вычитание:", c1 - c2)
+print("Умножение:", c1 * c2)
+print("Деление:", c1 / c2)
